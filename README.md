@@ -17,6 +17,10 @@ Privacy and Security
 ## Objectives:
 
 
+Develop a software that will enable diabetic patients manage their glucose level even while on motion (driving). Bridge the gap the sensors (wearable and cars), the users, and the healthcare provider.  
+
+With features that could provide the following services:
+
 Provide a comprehensive directory of healthcare providers in the region, including doctors, dentists, and other specialists.
 Allow patients to search for providers based on their location, specialty, insurance, and other criteria.
 Enable patients to schedule appointments with providers directly through the app.
@@ -41,9 +45,13 @@ Empathy and customer service
 
 ## Tools:
 
+###Front-end:
 
-Apps for project mgmt: Trello, Asana, GitHub
-For talk: Whatsapp, Zoom
+###Back-end:
+
+
+
+### Communication Collaboration/ Project Management: Trello, Asana, GitHub, Whatsapp, Zoom
 
 
 ## What we need for next week:
