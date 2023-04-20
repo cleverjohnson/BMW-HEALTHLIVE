@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Dashboard</title>
+    </head>
+    <body>
+        <h1>Welcome to the Dashboard, {{ current_user.username }}</h1>
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('dashboard') }}">Home</a></li>
+                <li><a href="{{ url_for('logout') }}">Logout</a></li>
+            </ul>
+        </nav>
+        <h2>Dashboard Content</h2>
+        <p>This is the content of the dashboard.</p>
+    </body>
+</html>
