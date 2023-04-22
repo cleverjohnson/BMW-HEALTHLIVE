@@ -9,7 +9,7 @@ const theme = createTheme({
       main: '#1E1E3B', // BMW Dark Blue
     },
     text: {
-      primary: '#000000',
+      primary: '#000000', // black
       secondary: '#FFFFFF',
     },
     background: {
@@ -23,3 +23,4 @@ const theme = createTheme({
 });
 
 export default theme;
+

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import GlucoseGraph from './GlucoseGraph';
-import AlertsList from './AlertsList';
-import { Container, Grid, Box, Typography } from '@mui/material';
+import { Container, Grid, Box } from '@mui/material';
 import Layout from './Layout';
 import Header from './Header';
 import InfoCard from './InfoCard';
+import GlucoseMonitor from './GlucoseMonitor';
+import AlertsList from './AlertsList';
 
 const App = () => {
   const [glucoseData, setGlucoseData] = useState([]);
@@ -13,29 +13,36 @@ const App = () => {
   const [car, setCar] = useState({});
 
   useEffect(() => {
+    const patientId = 'P1023';
     const fetchData = async () => {
       try {
-        const patientId = 'P1023';
         const glucoseResponse = await fetch(`http://localhost:5000/api/patients/${patientId}/glucose-data`);
         const glucoseData = await glucoseResponse.json();
         setGlucoseData(glucoseData.glucoseData);
         setAlerts(glucoseData.alerts);
-
-        const patientResponse = await fetch('http://localhost:5000/api/patient');
+  
+        const patientResponse = await fetch(`http://localhost:5000/api/patient/${patientId}`);
         const patientData = await patientResponse.json();
         setPatient(patientData);
-
-        const carResponse = await fetch('http://localhost:5000/api/car');
+  
+        const carResponse = await fetch(`http://localhost:5000/api/car/${patientId}`);
         const carData = await carResponse.json();
         setCar(carData);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
+  
+    fetchData(); // Fetch the initial data
+    const interval = setInterval(fetchData, 10000); // Fetch the data every 10 seconds (10000 ms)
+  
+    return () => clearInterval(interval); // Clean up the interval when the component unmounts
+  }, []);  
 
-    fetchData();
-  }, []);
-
+  console.log('glucoseData:', glucoseData);
+  console.log('alerts:', alerts);
+  console.log('patient:', patient);
+  console.log('car:', car);
 
   return (
     <>
@@ -43,24 +50,6 @@ const App = () => {
       <Layout sx={{ backgroundColor: '#FFFFFF' }}>
       <Box sx={{ marginTop: '64px', display: 'flex' }}>
         <Container>
-          <Grid container spacing={3} sx={{ marginBottom: (theme) => theme.spacing(4) }}>
-            <Grid item xs={12} sm={12} md={12} lg={9}>
-              <InfoCard
-                title="Glucose Monitoring"
-                sx={{ backgroundColor: (theme) => theme.palette.background.lightGrey, color: (theme) => theme.palette.secondary.main, marginBottom: (theme) => theme.spacing(4) }}
-              >
-                <GlucoseGraph data={glucoseData} />
-              </InfoCard>
-            </Grid>
-            <Grid item xs={12} sm={12} md={6} lg={3}>
-              <InfoCard
-                title="Alerts"
-                sx={{ backgroundColor: (theme) => theme.palette.background.lightGrey, color: (theme) => theme.palette.secondary.main, marginBottom: (theme) => theme.spacing(4) }}
-              >
-                <AlertsList alerts={alerts} />
-              </InfoCard>
-            </Grid>
-          </Grid>
             <Grid container spacing={3} sx={{ marginBottom: (theme) => theme.spacing(4) }}>
               <Grid item xs={12} sm={6} md={6} lg={6}>
                 <InfoCard
@@ -84,6 +73,12 @@ const App = () => {
                   sx={{ backgroundColor: (theme) => theme.palette.background.lightGrey, color: (theme) => theme.palette.secondary.main }}
                 />
               </Grid>
+            </Grid>
+            <Grid item xs={12} sm={6} md={6} lg={6}>
+              <GlucoseMonitor glucoseData={glucoseData} />
+            </Grid>
+            <Grid item xs={12} sm={6} md={6} lg={6}>
+              <AlertsList alerts={alerts} />
             </Grid>
           </Container>
         </Box>

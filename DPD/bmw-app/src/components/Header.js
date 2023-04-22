@@ -4,7 +4,6 @@ import { styled } from '@mui/system';
 import { DriveEta } from '@mui/icons-material';
 import { Lock as LockIcon } from '@mui/icons-material';
 import { Menu as MenuIcon } from '@mui/icons-material';
-import { ListItem, ListItemText } from '@mui/material';
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   backgroundColor: '#1E1E1E',
@@ -61,7 +60,7 @@ const Header = () => {
   return (
     <StyledAppBar position="fixed">
       <StyledToolbar>
-        <LogoBox sx={{ flexGrow: 1 }}>
+        <LogoBox>
           <StyledDriveEta />
           <StyledTypography variant="h6" component="div" sx={{ display: { xs: 'none', sm: 'block' } }}>
             BMW HealthDrive
@@ -130,20 +129,6 @@ const Header = () => {
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Button
               color="inherit"
-              startIcon={<LockIcon />}
-              sx={{
-                fontSize: '1rem',
-                padding: '0.5rem',
-                textTransform: 'none',
-                display: { xs: 'none', sm: 'block' },
-              }}
-            >
-              {!isSmallScreen && 'Login'}
-            </Button>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Button
-              color="inherit"
               aria-controls="help-menu"
               aria-haspopup="true"
               onClick={handleClick}
@@ -166,6 +151,20 @@ const Header = () => {
               <MenuItem onClick={handleClose}>Documentation</MenuItem>
               <MenuItem onClick={handleClose}>Contact Support</MenuItem>
             </Menu>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Button
+              color="inherit"
+              startIcon={<LockIcon />}
+              sx={{
+                fontSize: '1rem',
+                padding: '0.5rem',
+                textTransform: 'none',
+                display: { xs: 'none', sm: 'block' },
+              }}
+            >
+              {!isSmallScreen && 'Login'}
+            </Button>
           </Box>
         </StyledToolbar>
       </StyledAppBar>
