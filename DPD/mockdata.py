@@ -1,7 +1,7 @@
 import json
 import random
 from datetime import datetime, timedelta
-import mysql.connector
+import sqlite3
 
 
 def generate_glucose_data():
@@ -82,59 +82,58 @@ def generate_safety_actions(alerts):
     return safety_actions
 
 def store_mock_data_to_database(mock_data):
-    connection = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="Nd12356789gC",
-        database="bmw"
-    )
+    connection = sqlite3.connect("bmw.db")  # Update the SQLite database filename as needed
 
     try:
-        with connection.cursor() as cursor:
-            for data in mock_data:
+        with connection:
+            cursor = connection.cursor()
+
+            # Ensure the needed tables exist; if not, create them (only needed for SQLite)
+            cursor.executescript("""
+                CREATE TABLE IF NOT EXISTS patients (id TEXT PRIMARY KEY, name TEXT, age INTEGER, diabetes_type TEXT);
+                CREATE TABLE IF NOT EXISTS sensors (id TEXT PRIMARY KEY, model TEXT, battery_status TEXT, patient_id TEXT, FOREIGN KEY(patient_id) REFERENCES patients(id));
+                CREATE TABLE IF NOT EXISTS cars (id TEXT PRIMARY KEY, make TEXT, model TEXT, year INTEGER, patient_id TEXT, FOREIGN KEY(patient_id) REFERENCES patients(id));
+                CREATE TABLE IF NOT EXISTS glucose_data (id INTEGER PRIMARY KEY AUTOINCREMENT, timestamp TEXT, glucose_level INTEGER, trend TEXT, unit TEXT, sensor_id TEXT, FOREIGN KEY(sensor_id) REFERENCES sensors(id));
+                CREATE TABLE IF NOT EXISTS alerts (id TEXT PRIMARY KEY, timestamp TEXT, type TEXT, message TEXT, glucose_data_id INTEGER, FOREIGN KEY(glucose_data_id) REFERENCES glucose_data(id));
+                CREATE TABLE IF NOT EXISTS safety_actions (id INTEGER PRIMARY KEY AUTOINCREMENT, action TEXT, alert_id TEXT, FOREIGN KEY(alert_id) REFERENCES alerts(id));
+            """)
+            
+            for patient_data in mock_data:
+                patient_id = patient_data['patient']['id']
+                sensor_id = patient_data['sensor']['id']
+                car_id = patient_data['car']['id']
+
                 # Insert patient data
-                patient = data["patient"]
-                cursor.execute(
-                    "INSERT INTO patients (id, name, age, diabetes_type) VALUES (%s, %s, %s, %s)",
-                    (patient["id"], patient["name"], patient["age"], patient["diabetes_type"])
-                )
-
+                cursor.execute("INSERT INTO patients VALUES (?, ?, ?, ?)", 
+                                (patient_id, patient_data['patient']['name'], patient_data['patient']['age'], patient_data['patient']['diabetes_type']))
+                
                 # Insert sensor data
-                sensor = data["sensor"]
-                cursor.execute(
-                    "INSERT INTO sensors (id, model, battery_status, patient_id) VALUES (%s, %s, %s, %s)",
-                    (sensor["id"], sensor["model"], sensor["battery_status"], patient["id"])
-                )
-
+                cursor.execute("INSERT INTO sensors VALUES (?, ?, ?, ?)", 
+                                (sensor_id, patient_data['sensor']['model'], patient_data['sensor']['battery_status'], patient_id))
+                
                 # Insert car data
-                car = data["car"]
-                cursor.execute(
-                    "INSERT INTO cars (id, make, model, year, patient_id) VALUES (%s, %s, %s, %s, %s)",
-                    (car["id"], car["make"], car["model"], car["year"], patient["id"])
-                )
-
-                # Insert glucose data and alerts
-                for g_data in data["glucose_data"]:
-                    cursor.execute(
-                        "INSERT INTO glucose_data (timestamp, glucose_level, trend, unit, sensor_id) VALUES (%s, %s, %s, %s, %s)",
-                        (g_data["timestamp"], g_data["glucose_level"], g_data["trend"], g_data["unit"], sensor["id"])
-                    )
-                    g_data_id = cursor.lastrowid
-
-                    for alert in data["alerts"]:
-                        if alert["timestamp"] == g_data["timestamp"]:
-                            cursor.execute(
-                                "INSERT INTO alerts (id, timestamp, type, message, glucose_data_id) VALUES (%s, %s, %s, %s, %s)",
-                                (alert["id"], alert["timestamp"], alert["type"], alert["message"], g_data_id)
-                            )
-                            alert_id = alert["id"]
-
-                            for safety_action in data["safety_actions"]:
-                                if safety_action["alert_id"] == alert_id:
-                                    cursor.execute(
-                                        "INSERT INTO safety_actions (action, alert_id) VALUES (%s, %s)",
-                                        (safety_action["action"], alert_id)
-                                    )
+                cursor.execute("INSERT INTO cars VALUES (?, ?, ?, ?, ?)", 
+                                (car_id, patient_data['car']['make'], patient_data['car']['model'], patient_data['car']['year'], patient_id))
+                
+                # Insert glucose data
+                for glucose_data in patient_data['glucose_data']:
+                    cursor.execute("INSERT INTO glucose_data (timestamp, glucose_level, trend, unit, sensor_id) VALUES (?, ?, ?, ?, ?)", 
+                                    (glucose_data['timestamp'], glucose_data['glucose_level'], glucose_data['trend'], glucose_data['unit'], sensor_id))
+                    glucose_data_id = cursor.lastrowid
+                    
+                    # Insert alerts
+                    for alert in patient_data['alerts']:
+                        if alert['timestamp'] == glucose_data['timestamp']:
+                            cursor.execute("INSERT INTO alerts VALUES (?, ?, ?, ?, ?)", 
+                                            (alert['id'], alert['timestamp'], alert['type'], alert['message'], glucose_data_id))
+                            alert_id = alert['id']
+                            
+                            # Insert safety actions
+                            for safety_action in patient_data['safety_actions']:
+                                if safety_action['alert_id'] == alert_id:
+                                    cursor.execute("INSERT INTO safety_actions (action, alert_id) VALUES (?, ?)", 
+                                                    (safety_action['action'], alert_id))
+                                    
         connection.commit()
     finally:
         connection.close()
