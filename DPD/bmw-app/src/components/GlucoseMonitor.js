@@ -1,7 +1,11 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
+import GlucoseDataTable from './GlucoseDataTable';
 
 const GlucoseMonitor = ({ glucoseData, alerts }) => {
+  if (!Array.isArray(glucoseData)) {
+    return <div>Error: glucoseData must be an array.</div>;
+  }
   const chartData = {
     labels: glucoseData.map((gd) => gd.timestamp),
     datasets: [
@@ -38,6 +42,7 @@ const GlucoseMonitor = ({ glucoseData, alerts }) => {
   return (
     <div>
       <Line data={chartData} options={chartOptions} />
+      <GlucoseDataTable glucoseData={glucoseData} />
       <h3>Alerts:</h3>
       <ul>
         {alerts.map((alert, index) => (
@@ -49,3 +54,4 @@ const GlucoseMonitor = ({ glucoseData, alerts }) => {
 };
 
 export default GlucoseMonitor;
+
