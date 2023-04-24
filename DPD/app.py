@@ -9,14 +9,15 @@ from flask_cors import CORS
 # Initialize the Flask app
 app = Flask(__name__)
 jwt = JWTManager(app)
+CORS(app)
 
-# Enable CORS only for specific origins
-CORS(app, resources={r'/*': {'origins': 'http://localhost:3000'}})
+# Enable CORS for all domains
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 app.secret_key = 'dataengineer'
 
-# Use a MySQL connection string
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://root:Nd12356789gC@localhost:3306/bmw'
+# Use an SQLite connection string
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///bmw.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy()

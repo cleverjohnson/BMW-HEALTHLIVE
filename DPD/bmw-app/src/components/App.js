@@ -4,6 +4,7 @@ import Layout from './Layout';
 import Header from './Header';
 import InfoCard from './InfoCard';
 import GlucoseMonitor from './GlucoseMonitor';
+import GlucoseDataTable from './GlucoseDataTable';
 import AlertsList from './AlertsList';
 
 const App = () => {
@@ -76,9 +77,6 @@ const App = () => {
             </Grid>
             <Grid item xs={12} sm={6} md={6} lg={6}>
               <GlucoseMonitor glucoseData={glucoseData} alerts={alerts} />
-            </Grid>
-            <Grid item xs={12} sm={6} md={6} lg={6}>
-              <AlertsList alerts={alerts} />
             </Grid>
           </Container>
         </Box>
