@@ -75,7 +75,7 @@ const App = () => {
               </Grid>
             </Grid>
             <Grid item xs={12} sm={6} md={6} lg={6}>
-              <GlucoseMonitor glucoseData={glucoseData} />
+              <GlucoseMonitor glucoseData={glucoseData} alerts={alerts} />
             </Grid>
             <Grid item xs={12} sm={6} md={6} lg={6}>
               <AlertsList alerts={alerts} />
