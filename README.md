@@ -45,11 +45,15 @@ Empathy and customer service
 
 ## Tools:
 
-### Front-end:
+### Front-end:#
+
+React Framework
 
 ### Back-end:
 
-
+Flask
+Sqlite
+Docker
 
 ### Communication Collaboration/ Project Management: Trello, Asana, GitHub, Whatsapp, Zoom
 
