@@ -32,7 +32,9 @@ session = DBSession()
 def get_glucose_data(patient_id):
     glucose_data = session.query(GlucoseData).filter(GlucoseData.sensor.has(patient_id=patient_id)).all()
     alerts = session.query(Alert).filter(Alert.glucose_data_id.in_([gd.id for gd in glucose_data])).all()
-    return jsonify(glucoseData=[gd.serialize for gd in glucose_data], alerts=[alert.serialize for alert in alerts])
+    safety_actions = session.query(SafetyAction).filter(SafetyAction.alert_id.in_([alert.id for alert in alerts])).all()
+    return jsonify(glucoseData=[gd.serialize for gd in glucose_data], alerts=[alert.serialize for alert in alerts], safety_actions=[sa.serialize for sa in safety_actions])
+
 
 @app.route('/api/patient/<patient_id>')
 def get_patient(patient_id):
