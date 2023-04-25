@@ -46,7 +46,7 @@ const GlucoseMonitor = ({ glucoseData, alerts }) => {
       <h3>Alerts:</h3>
       <ul>
         {alerts.map((alert, index) => (
-          <li key={index}>{alert}</li>
+          <li key={index}>{alert.message}</li>
         ))}
       </ul>
     </div>
