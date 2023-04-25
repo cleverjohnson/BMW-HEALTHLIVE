@@ -45,7 +45,7 @@ Empathy and customer service
 
 ## Tools:
 
-### Front-end:#
+### Front-end:
 
 React Framework
 
