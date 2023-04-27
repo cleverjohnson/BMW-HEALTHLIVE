@@ -2,13 +2,13 @@ version: '3.8'
 
 services:
   backend:
-    build: ./backend
+    build: ./DPD
     ports:
       - "5000:5000"
     volumes:
       - ./backend:/app
   frontend:
-    build: ./frontend
+    build: ./DPD/bmw-app
     ports:
       - "3000:3000"
     volumes:
