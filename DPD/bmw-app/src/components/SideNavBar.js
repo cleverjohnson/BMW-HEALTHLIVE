@@ -29,10 +29,6 @@ const menuItems = [
   const SideNavBar = () => {
     const isSmallScreen = useMediaQuery(theme => theme.breakpoints.down('sm'));
     const [drawerOpen, setDrawerOpen] = React.useState(false);
-  
-    const handleDrawerToggle = () => {
-      setDrawerOpen(!drawerOpen);
-    };
 
     return (
       <Drawer

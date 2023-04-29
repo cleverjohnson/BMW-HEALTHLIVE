@@ -1,32 +1,34 @@
 import * as React from 'react';
-import { AppBar, Toolbar, Typography, Box, Button, useMediaQuery, IconButton, Menu, MenuItem } from '@mui/material';
+import { AppBar, Toolbar, Typography, Box, Button, IconButton, Menu, MenuItem } from '@mui/material';
 import { styled } from '@mui/system';
 import { DriveEta } from '@mui/icons-material';
 import { Lock as LockIcon } from '@mui/icons-material';
 import { Menu as MenuIcon } from '@mui/icons-material';
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
-  backgroundColor: '#1E1E1E',
+  backgroundColor: theme.palette.primary.main,
 }));
 
 const StyledToolbar = styled(Toolbar)({
   display: 'flex',
-  justifyContent: 'space-between',
+  justifyContent: 'flex-end',
 });
 
 const LogoBox = styled(Box)({
   display: 'flex',
   alignItems: 'center',
+  flexGrow: 1,
 });
 
 const StyledDriveEta = styled(DriveEta)(({ theme }) => ({
   marginRight: '5px',
+  marginLeft: '16px',
 }));
 
 const StyledTypography = styled(Typography)({
   fontWeight: 'bold',
   flexGrow: 1,
-  textAlign: 'center'
+  marginLeft: 'auto'
 });
 
 const Header = () => {
@@ -55,8 +57,6 @@ const Header = () => {
     return currentTime.toLocaleString('en-US', options);
   }, [currentTime]);
 
-  const isSmallScreen = useMediaQuery(theme => theme.breakpoints.down('sm'));
-
   return (
     <StyledAppBar position="fixed">
       <StyledToolbar>
@@ -66,15 +66,16 @@ const Header = () => {
             BMW HealthDrive
           </StyledTypography>
         </LogoBox>
-        <IconButton
-          edge="end"
-          color="inherit"
-          aria-label="menu"
-          onClick={handleClick}
-          sx={{ display: { xs: 'block', sm: 'none' } }}
-        >
-          <MenuIcon />
-        </IconButton>
+        <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
+         <IconButton
+           edge="end"
+           color="inherit"
+           aria-label="menu"
+           onClick={handleClick}
+         >
+           <MenuIcon />
+         </IconButton>
+        </Box>
         <Menu
           anchorEl={anchorEl}
           open={open}
@@ -126,44 +127,19 @@ const Header = () => {
           <Typography variant="body1" color="inherit">
             {formattedTime}
           </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ marginLeft: 'auto' }}>
             <Button
               color="inherit"
-              aria-controls="help-menu"
-              aria-haspopup="true"
-              onClick={handleClick}
-              sx={{
-                fontSize: '1rem',
-                padding: '0.5rem',
-                textTransform: 'none',
-              }}
-            >
-              Help & Support
-            </Button>
-            <Menu
-              id="help-menu"
-              anchorEl={anchorEl}
-              keepMounted
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-            >
-              <MenuItem onClick={handleClose}>FAQ</MenuItem>
-              <MenuItem onClick={handleClose}>Documentation</MenuItem>
-              <MenuItem onClick={handleClose}>Contact Support</MenuItem>
-            </Menu>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Button
-              color="inherit"
-              startIcon={<LockIcon />}
+              endIcon={<LockIcon />}
               sx={{
                 fontSize: '1rem',
                 padding: '0.5rem',
                 textTransform: 'none',
                 display: { xs: 'none', sm: 'block' },
+                marginLeft: '1rem'
               }}
             >
-              {!isSmallScreen && 'Login'}
+              Login
             </Button>
           </Box>
         </StyledToolbar>

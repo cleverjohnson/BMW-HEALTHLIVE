@@ -1,5 +1,6 @@
 // NearestHospital.js
 import React, { useEffect, useState } from 'react';
+import { Card, CardContent, CircularProgress, Typography, Box } from '@mui/material';
 
 const NearestHospital = ({ position }) => {
   const [nearestHospital, setNearestHospital] = useState(null);
@@ -25,17 +26,22 @@ const NearestHospital = ({ position }) => {
   };
 
   return (
-    <div>
-      {nearestHospital ? (
-        <div>
-          <h3>Nearest Hospital</h3>
-          <p>Name: {nearestHospital.name}</p>
-          <p>Address: {nearestHospital.vicinity}</p>
-        </div>
-      ) : (
-        <p>Loading nearest hospital...</p>
-      )}
-    </div>
+    <Card>
+      <CardContent>
+        {nearestHospital ? (
+          <div>
+            <Typography variant="h6" component="div">Nearest Hospital</Typography>
+            <Typography>Name: {nearestHospital.name}</Typography>
+            <Typography>Address: {nearestHospital.vicinity}</Typography>
+          </div>
+        ) : (
+          <Box display="flex" justifyContent="center" alignItems="center">
+            <CircularProgress />
+            <Typography>Loading nearest hospital...</Typography>
+          </Box>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Grid, Box } from '@mui/material';
+import { Container, Grid, Box, Snackbar, Alert as MuiAlert } from '@mui/material';
+import { styled } from '@mui/system';
 import Layout from './Layout';
 import Header from './Header';
 import InfoCard from './InfoCard';
@@ -7,6 +8,13 @@ import GlucoseMonitor from './GlucoseMonitor';
 import NearestHospital from './NearestHospital';
 
 const CRITICAL_THRESHOLD = 200; // Set the threshold value
+
+const StyledContainer = styled(Container)(({ theme }) => ({
+  [theme.breakpoints.down('sm')]: {
+    paddingLeft: 0,
+    paddingRight: 0,
+  },
+}));
 
 const App = () => {
   const [glucoseData, setGlucoseData] = useState([]);
@@ -16,6 +24,8 @@ const App = () => {
   const [safetyActions, setSafetyActions] = useState([]);
   const [position, setPosition] = useState(null);
   const [showNearestHospital, setShowNearestHospital] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
   useEffect(() => {
     const patientId = 'P1023';
@@ -40,7 +50,7 @@ const App = () => {
     };
   
     fetchData(); // Fetch the initial data
-    const interval = setInterval(fetchData, 60000); // Fetch the data every 60 seconds (10000 ms)
+    const interval = setInterval(fetchData, 10000); // Fetch the data every 10 seconds (10000 ms)
   
     return () => clearInterval(interval); // Clean up the interval when the component unmounts
   }, []);  
@@ -65,6 +75,22 @@ const App = () => {
     }
   }, [glucoseData]);
 
+    // Effect to handle safety action notifications
+    useEffect(() => {
+      if (safetyActions.length > 0) {
+        const lastSafetyAction = safetyActions[safetyActions.length - 1];
+        setSnackbarMessage(`Safety Action: ${lastSafetyAction.action}`);
+        setSnackbarOpen(true);
+      }
+    }, [safetyActions]);
+  
+    const handleCloseSnackbar = (event, reason) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+      setSnackbarOpen(false);
+    };
+
   console.log('glucoseData:', glucoseData);
   console.log('alerts:', alerts);
   console.log('patient:', patient);
@@ -75,7 +101,7 @@ const App = () => {
       <Header />
       <Layout sx={{ backgroundColor: '#FFFFFF' }}>
       <Box sx={{ marginTop: '64px', display: 'flex' }}>
-        <Container>
+        <StyledContainer>
             <Grid container spacing={1} sx={{ marginBottom: (theme) => theme.spacing(4) }}>
               <Grid item xs={12} sm={6} md={6} lg={6}>
                 <InfoCard
@@ -104,8 +130,18 @@ const App = () => {
               <GlucoseMonitor glucoseData={glucoseData} alerts={alerts} safetyActions={safetyActions} />
               {showNearestHospital && position && <NearestHospital position={position} />}
             </Grid>
-          </Container>
+          </StyledContainer>
         </Box>
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={6000}
+          onClose={handleCloseSnackbar}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        >
+          <MuiAlert onClose={handleCloseSnackbar} severity="info" elevation={6} variant="filled" sx={{ backgroundColor: '#030303' }}>
+            {snackbarMessage}
+          </MuiAlert>
+        </Snackbar>
       </Layout>
     </>
   );
