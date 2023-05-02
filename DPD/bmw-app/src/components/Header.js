@@ -64,6 +64,7 @@ const Header = () => {
           <StyledDriveEta />
           <StyledTypography variant="h6" component="div" sx={{ display: { xs: 'none', sm: 'block' } }}>
             BMW HealthDrive
+            <Typography variant="subtitle2" component="div">Glucose Monitoring for Road Safety</Typography>
           </StyledTypography>
         </LogoBox>
         <Box sx={{ display: { xs: 'block', sm: 'none' } }}>

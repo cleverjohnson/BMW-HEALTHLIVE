@@ -31,17 +31,17 @@ const App = () => {
     const patientId = 'P1023';
     const fetchData = async () => {
       try {
-        const glucoseResponse = await fetch(`http://localhost:5000/api/patients/${patientId}/glucose-data`);
+        const glucoseResponse = await fetch(`${process.env.REACT_APP_API_URL}/api/patients/${patientId}/glucose-data`);
         const glucoseData = await glucoseResponse.json();
         setGlucoseData(glucoseData.glucoseData);
         setAlerts(glucoseData.alerts);
         setSafetyActions(glucoseData.safety_actions);
   
-        const patientResponse = await fetch(`http://localhost:5000/api/patient/${patientId}`);
+        const patientResponse = await fetch(`${process.env.REACT_APP_API_URL}/api/patient/${patientId}`);
         const patientData = await patientResponse.json();
         setPatient(patientData);
   
-        const carResponse = await fetch(`http://localhost:5000/api/car/${patientId}`);
+        const carResponse = await fetch(`${process.env.REACT_APP_API_URL}/api/car/${patientId}`);
         const carData = await carResponse.json();
         setCar(carData);
       } catch (error) {
@@ -104,15 +104,15 @@ const App = () => {
         <StyledContainer>
             <Grid container spacing={1} sx={{ marginBottom: (theme) => theme.spacing(4) }}>
               <Grid item xs={12} sm={6} md={6} lg={6}>
-                <InfoCard
-                  title="Patient Information"
-                  data={[
-                    { label: 'Name', value: patient.name },
-                    { label: 'Age', value: patient.age },
-                    { label: 'Diabetes Type', value: patient.diabetes_type },
-                  ]}
-                  sx={{ backgroundColor: (theme) => theme.palette.background.lightGrey, color: (theme) => theme.palette.secondary.main }}
-                />
+              <InfoCard
+                title="Patient Glucose Monitoring"
+                data={[
+                  { label: 'Name', value: patient.name },
+                  { label: 'Age', value: patient.age },
+                  { label: 'Diabetes Type', value: patient.diabetes_type },
+                ]}
+                sx={{ backgroundColor: (theme) => theme.palette.background.lightGrey, color: (theme) => theme.palette.secondary.main }}
+              />
               </Grid>
               <Grid item xs={12} sm={6} md={6} lg={6}>
                 <InfoCard

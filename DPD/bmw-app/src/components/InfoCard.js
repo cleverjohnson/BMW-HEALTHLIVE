@@ -10,7 +10,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
   '& .MuiCardHeader-root': {
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.text.secondary,
-    padding: theme.spacing(1), 
+    padding: theme.spacing(1),
   },
   '& .MuiCardContent-root': {
     paddingTop: 0,
@@ -20,19 +20,19 @@ const StyledCard = styled(Card)(({ theme }) => ({
 
 const InfoCard = ({ title, data }) => (
   <StyledCard>
-    <CardHeader title={title} titleTypographyProps={{ variant: 'subtitle1' }} /> 
+    <CardHeader title={title} titleTypographyProps={{ variant: 'subtitle1', fontSize: '0.9rem' }} />
     <CardContent>
-      <Grid container spacing={1}> 
+      <Grid container spacing={1}>
         {data &&
           data.map(({ label, value }) => (
             <Grid item xs={12} key={label}>
-              <Typography variant="subtitle2" component="div" gutterBottom>
+              <Typography variant="subtitle2" component="div" gutterBottom sx={{ fontSize: '0.8rem' }}>
                 <strong>{label}</strong>
               </Typography>
               <Typography
                 variant="body2"
                 component="div"
-                sx={{ color: '#666666', lineHeight: '1.2' }}
+                sx={{ color: '#666666', lineHeight: '1.2', fontSize: '0.7rem' }}
               >
                 {value}
               </Typography>

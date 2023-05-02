@@ -4,27 +4,27 @@ import { DriveEta, Person, Timeline, Warning } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 
 const menuItems = [
-    {
-      label: 'Patient Info',
-      icon: <Person />,
-      route: '/patient-info',
-    },
-    {
-      label: 'Glucose Data',
-      icon: <Timeline />,
-      route: '/glucose-data',
-    },
-    {
-      label: 'Alerts',
-      icon: <Warning />,
-      route: '/alerts',
-    },
-    {
-      label: 'Car Info',
-      icon: <DriveEta />,
-      route: '/car-info',
-    },
-  ];
+  {
+    label: 'Patient Info',
+    icon: <Person />,
+    route: '/patient-info',
+  },
+  {
+    label: 'Glucose Monitoring',
+    icon: <Timeline />,
+    route: '/glucose-data',
+  },
+  {
+    label: 'Safety Alerts',
+    icon: <Warning />,
+    route: '/alerts',
+  },
+  {
+    label: 'Car Info',
+    icon: <DriveEta />,
+    route: '/car-info',
+  },
+];
 
   const SideNavBar = () => {
     const isSmallScreen = useMediaQuery(theme => theme.breakpoints.down('sm'));
