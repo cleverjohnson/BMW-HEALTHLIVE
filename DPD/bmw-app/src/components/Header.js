@@ -1,12 +1,13 @@
 import * as React from 'react';
-import { AppBar, Toolbar, Typography, Box, Button, IconButton, Menu, MenuItem } from '@mui/material';
+import { AppBar, Toolbar, Typography, Box, IconButton, Menu, MenuItem } from '@mui/material';
 import { styled } from '@mui/system';
 import { DriveEta } from '@mui/icons-material';
 import { Lock as LockIcon } from '@mui/icons-material';
 import { Menu as MenuIcon } from '@mui/icons-material';
+import AnimatedButton from './AnimatedButton';
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
-  backgroundColor: theme.palette.primary.main,
+  backgroundColor: '#030303',
 }));
 
 const StyledToolbar = styled(Toolbar)({
@@ -60,24 +61,7 @@ const Header = () => {
   return (
     <StyledAppBar position="fixed">
       <StyledToolbar>
-        <LogoBox>
-          <StyledDriveEta />
-          <StyledTypography variant="h6" component="div" sx={{ display: { xs: 'none', sm: 'block' } }}>
-            BMW HealthDrive
-            <Typography variant="subtitle2" component="div">Glucose Monitoring for Road Safety</Typography>
-          </StyledTypography>
-        </LogoBox>
-        <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
-         <IconButton
-           edge="end"
-           color="inherit"
-           aria-label="menu"
-           onClick={handleClick}
-         >
-           <MenuIcon />
-         </IconButton>
-        </Box>
-        <Menu
+      <Menu
           anchorEl={anchorEl}
           open={open}
           onClose={handleClose}
@@ -125,11 +109,28 @@ const Header = () => {
               <Typography variant="body2">Help & Support</Typography>
             </MenuItem>
           </Menu>
+        <LogoBox>
+          <StyledDriveEta />
+          <StyledTypography variant="h6" component="div" sx={{ display: { xs: 'none', sm: 'block' } }}>
+            BMW HealthDrive
+            <Typography variant="subtitle2" component="div">Glucose Monitoring for Road Safety</Typography>
+          </StyledTypography>
+        </LogoBox>
+        <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
+         <IconButton
+           edge="end"
+           color="inherit"
+           aria-label="menu"
+           onClick={handleClick}
+         >
+           <MenuIcon />
+         </IconButton>
+        </Box>
           <Typography variant="body1" color="inherit">
             {formattedTime}
           </Typography>
-          <Box sx={{ marginLeft: 'auto' }}>
-            <Button
+          <Box sx={{ marginLeft: 'auto', marginRight: '1rem' }}>
+            <AnimatedButton
               color="inherit"
               endIcon={<LockIcon />}
               sx={{
@@ -137,11 +138,10 @@ const Header = () => {
                 padding: '0.5rem',
                 textTransform: 'none',
                 display: { xs: 'none', sm: 'block' },
-                marginLeft: '1rem'
               }}
             >
               Login
-            </Button>
+            </AnimatedButton>
           </Box>
         </StyledToolbar>
       </StyledAppBar>

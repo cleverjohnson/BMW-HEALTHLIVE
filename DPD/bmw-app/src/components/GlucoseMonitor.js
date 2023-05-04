@@ -4,24 +4,24 @@ import { Line } from 'react-chartjs-2';
 import GlucoseDataTable from './GlucoseDataTable';
 import { Box, Typography } from '@mui/material';
 
-const GlucoseMonitor = ({ glucoseData, alerts, safetyActions }) => {
+const GlucoseMonitor = ({ glucoseData, alerts, safetyActions, dataStartIndex, dataEndIndex }) => {
   const getSafetyAction = (alertId) => {
     const sa = safetyActions.find((sa) => sa.alert_id === alertId);
     return sa ? sa.action : 'No safety action found';
   };
 
   const chartData = useMemo(() => ({
-      labels: glucoseData.map((gd) => gd.timestamp),
-      datasets: [
-        {
-          label: 'Glucose Level',
-          data: glucoseData.map((gd) => gd.glucose_level),
-          borderColor: 'rgba(255,99,132,1)',
-          backgroundColor: 'rgba(255,99,132,0.2)',
-          borderWidth: 2,
-        },
-      ],
-  }), [glucoseData]);
+    labels: glucoseData.slice(dataStartIndex, dataEndIndex).map((gd) => gd.timestamp),
+    datasets: [
+      {
+        label: 'Glucose Level',
+        data: glucoseData.slice(dataStartIndex, dataEndIndex).map((gd) => gd.glucose_level),
+        borderColor: 'rgba(255,99,132,1)',
+        backgroundColor: 'rgba(255,99,132,0.2)',
+        borderWidth: 2,
+      },
+    ],
+  }), [glucoseData, dataStartIndex, dataEndIndex]);
 
   const chartOptions = useMemo(() => ({
     scales: {
@@ -85,6 +85,8 @@ GlucoseMonitor.propTypes = {
       action: PropTypes.string.isRequired,
     }),
   ).isRequired,
+  dataStartIndex: PropTypes.number.isRequired,
+  dataEndIndex: PropTypes.number.isRequired,
 };
 
 const AlertsList = ({ alerts, getSafetyAction }) => (

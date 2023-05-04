@@ -1,13 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Grid, Box, Snackbar, Alert as MuiAlert } from '@mui/material';
-import { styled } from '@mui/system';
+import React, { useState, useEffect, useRef } from 'react';
+import { Container, Grid, Box, Snackbar, Grow, Alert as MuiAlert } from '@mui/material';
+import { styled, keyframes } from '@mui/system';
 import Layout from './Layout';
 import Header from './Header';
 import InfoCard from './InfoCard';
 import GlucoseMonitor from './GlucoseMonitor';
 import NearestHospital from './NearestHospital';
+import { Route, Routes } from 'react-router-dom';
+import Reminders from './features/reminders/Reminders';
 
 const CRITICAL_THRESHOLD = 200; // Set the threshold value
+
+
+const pulse = keyframes`
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+`;
+
+const AnimatedInfoCard = styled(InfoCard)`
+  animation: ${pulse} 3s infinite;
+  animation: ${pulse} 3s infinite;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.palette.primary.light};
+  }
+`;
 
 const StyledContainer = styled(Container)(({ theme }) => ({
   [theme.breakpoints.down('sm')]: {
@@ -26,6 +51,10 @@ const App = () => {
   const [showNearestHospital, setShowNearestHospital] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [dataStartIndex, setDataStartIndex] = useState(0);
+  const [dataEndIndex, setDataEndIndex] = useState(10);
+
+  const containerRef = useRef(null);
 
   useEffect(() => {
     const patientId = 'P1023';
@@ -44,6 +73,15 @@ const App = () => {
         const carResponse = await fetch(`${process.env.REACT_APP_API_URL}/api/car/${patientId}`);
         const carData = await carResponse.json();
         setCar(carData);
+
+        if (dataEndIndex >= glucoseData.glucoseData.length) {
+          setDataStartIndex(0);
+          setDataEndIndex(10);
+        } else {
+          setDataStartIndex((prevIndex) => prevIndex + 10);
+          setDataEndIndex((prevIndex) => prevIndex + 10);
+        }
+
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -51,9 +89,8 @@ const App = () => {
   
     fetchData(); // Fetch the initial data
     const interval = setInterval(fetchData, 10000); // Fetch the data every 10 seconds (10000 ms)
-  
     return () => clearInterval(interval); // Clean up the interval when the component unmounts
-  }, []);  
+  }, [dataEndIndex]);  
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -100,51 +137,66 @@ const App = () => {
     <>
       <Header />
       <Layout sx={{ backgroundColor: '#FFFFFF' }}>
-      <Box sx={{ marginTop: '64px', display: 'flex' }}>
-        <StyledContainer>
-            <Grid container spacing={1} sx={{ marginBottom: (theme) => theme.spacing(4) }}>
-              <Grid item xs={12} sm={6} md={6} lg={6}>
-              <InfoCard
-                title="Patient Glucose Monitoring"
-                data={[
-                  { label: 'Name', value: patient.name },
-                  { label: 'Age', value: patient.age },
-                  { label: 'Diabetes Type', value: patient.diabetes_type },
-                ]}
-                sx={{ backgroundColor: (theme) => theme.palette.background.lightGrey, color: (theme) => theme.palette.secondary.main }}
-              />
-              </Grid>
-              <Grid item xs={12} sm={6} md={6} lg={6}>
-                <InfoCard
-                  title="Car Information"
-                  data={[
-                    { label: 'Make', value: car.make },
-                    { label: 'Model', value: car.model },
-                    { label: 'Year', value: car.year },
-                  ]}
-                  sx={{ backgroundColor: (theme) => theme.palette.background.lightGrey, color: (theme) => theme.palette.secondary.main }}
-                />
-              </Grid>
-            </Grid>
-            <Grid item xs={12} sm={6} md={6} lg={6}>
-              <GlucoseMonitor glucoseData={glucoseData} alerts={alerts} safetyActions={safetyActions} />
-              {showNearestHospital && position && <NearestHospital position={position} />}
-            </Grid>
-          </StyledContainer>
-        </Box>
-        <Snackbar
-          open={snackbarOpen}
-          autoHideDuration={6000}
-          onClose={handleCloseSnackbar}
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-        >
-          <MuiAlert onClose={handleCloseSnackbar} severity="info" elevation={6} variant="filled" sx={{ backgroundColor: '#030303' }}>
-            {snackbarMessage}
-          </MuiAlert>
-        </Snackbar>
+        <Routes>
+          <Route
+            exact
+            path="/"
+            element={
+              <>
+                <Box sx={{ marginTop: '64px', display: 'flex' }}>
+                  <StyledContainer>
+                    <Grid container spacing={1} sx={{ marginBottom: (theme) => theme.spacing(4) }}>
+                      <Grid item xs={12} sm={6} md={6} lg={6}>
+                        <Grow in container={containerRef}>
+                          <AnimatedInfoCard
+                            title="Patient Glucose Monitoring"
+                            data={[
+                              { label: 'Name', value: patient.name },
+                              { label: 'Age', value: patient.age },
+                              { label: 'Diabetes Type', value: patient.diabetes_type },
+                            ]}
+                            sx={{ backgroundColor: (theme) => theme.palette.background.lightGrey, color: (theme) => theme.palette.secondary.main }}
+                          />
+                        </Grow>
+                      </Grid>
+                      <Grid item xs={12} sm={6} md={6} lg={6}>
+                        <Grow in container={containerRef}>
+                          <AnimatedInfoCard
+                            title="Car Information"
+                            data={[
+                              { label: 'Make', value: car.make },
+                              { label: 'Model', value: car.model },
+                              { label: 'Year', value: car.year },
+                            ]}
+                            sx={{ backgroundColor: (theme) => theme.palette.background.lightGrey, color: (theme) => theme.palette.secondary.main }}
+                          />
+                        </Grow>
+                      </Grid>
+                    </Grid>
+                    <Grid item xs={12} sm={6} md={6} lg={6}>
+                      <GlucoseMonitor glucoseData={glucoseData} alerts={alerts} safetyActions={safetyActions} dataStartIndex={dataStartIndex} dataEndIndex={dataEndIndex}/>
+                      {showNearestHospital && position && <NearestHospital position={position} />}
+                    </Grid>
+                  </StyledContainer>
+                </Box>
+                <Snackbar
+                  open={snackbarOpen}
+                  autoHideDuration={6000}
+                  onClose={handleCloseSnackbar}
+                  anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                >
+                  <MuiAlert onClose={handleCloseSnackbar} severity="info" elevation={6} variant="filled" sx={{ backgroundColor: '#0066B2' }}>
+                    {snackbarMessage}
+                  </MuiAlert>
+                </Snackbar>
+              </>
+            }
+          />
+          <Route path="/reminders" element={<Reminders />} />
+        </Routes>
       </Layout>
     </>
-  );
+  );  
 };
 
 export default App;

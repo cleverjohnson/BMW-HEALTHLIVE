@@ -18,8 +18,8 @@ const StyledCard = styled(Card)(({ theme }) => ({
   },
 }));
 
-const InfoCard = ({ title, data }) => (
-  <StyledCard>
+const InfoCard = React.forwardRef(({ title, data }, ref) => (
+  <StyledCard ref={ref}>
     <CardHeader title={title} titleTypographyProps={{ variant: 'subtitle1', fontSize: '0.9rem' }} />
     <CardContent>
       <Grid container spacing={1}>
@@ -41,6 +41,6 @@ const InfoCard = ({ title, data }) => (
       </Grid>
     </CardContent>
   </StyledCard>
-);
+));
 
 export default InfoCard;
