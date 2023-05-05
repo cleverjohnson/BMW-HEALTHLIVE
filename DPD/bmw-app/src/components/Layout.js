@@ -7,7 +7,13 @@ const Layout = ({ children }) => {
   const isSmallScreen = useMediaQuery(theme => theme.breakpoints.down('sm'));
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', bgcolor: '#E0E0E0' }}>
+      <Box sx={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        minHeight: '100vh', 
+        backgroundImage: 'linear-gradient(to right, #BDBDBD, #FFFFFF)', 
+      }}>
+
       <Header />
       <Box sx={{ display: 'flex', flexGrow: 1 }}>
         {!isSmallScreen && (

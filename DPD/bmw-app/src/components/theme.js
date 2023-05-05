@@ -18,9 +18,8 @@ const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: 'Arial, sans-serif',
+    fontFamily: 'Roboto, Arial, sans-serif',
   },
 });
 
 export default theme;
-

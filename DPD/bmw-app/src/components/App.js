@@ -1,45 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Container, Grid, Box, Snackbar, Grow, Alert as MuiAlert } from '@mui/material';
-import { styled, keyframes } from '@mui/system';
+import React, { useState, useEffect } from 'react';
+import { Container, Grid, Box, Snackbar, Alert as MuiAlert } from '@mui/material';
+import { styled } from '@mui/system';
 import Layout from './Layout';
 import Header from './Header';
 import InfoCard from './InfoCard';
 import GlucoseMonitor from './GlucoseMonitor';
 import NearestHospital from './NearestHospital';
+import GlucoseValue from './GlucoseValue';
 import { Route, Routes } from 'react-router-dom';
 import Reminders from './features/reminders/Reminders';
 
 const CRITICAL_THRESHOLD = 200; // Set the threshold value
-
-
-const pulse = keyframes`
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-  100% {
-    transform: scale(1);
-  }
-`;
-
-const AnimatedInfoCard = styled(InfoCard)`
-  animation: ${pulse} 3s infinite;
-  animation: ${pulse} 3s infinite;
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.palette.primary.light};
-  }
-`;
-
-const StyledContainer = styled(Container)(({ theme }) => ({
-  [theme.breakpoints.down('sm')]: {
-    paddingLeft: 0,
-    paddingRight: 0,
-  },
-}));
 
 const App = () => {
   const [glucoseData, setGlucoseData] = useState([]);
@@ -54,7 +25,12 @@ const App = () => {
   const [dataStartIndex, setDataStartIndex] = useState(0);
   const [dataEndIndex, setDataEndIndex] = useState(10);
 
-  const containerRef = useRef(null);
+  const StyledContainer = styled(Container)(({ theme }) => ({
+    [theme.breakpoints.down('sm')]: {
+      paddingLeft: 0,
+      paddingRight: 0,
+    },
+  }));
 
   useEffect(() => {
     const patientId = 'P1023';
@@ -147,34 +123,26 @@ const App = () => {
                   <StyledContainer>
                     <Grid container spacing={1} sx={{ marginBottom: (theme) => theme.spacing(4) }}>
                       <Grid item xs={12} sm={6} md={6} lg={6}>
-                        <Grow in container={containerRef}>
-                          <AnimatedInfoCard
-                            title="Patient Glucose Monitoring"
-                            data={[
-                              { label: 'Name', value: patient.name },
-                              { label: 'Age', value: patient.age },
-                              { label: 'Diabetes Type', value: patient.diabetes_type },
-                            ]}
-                            sx={{ backgroundColor: (theme) => theme.palette.background.lightGrey, color: (theme) => theme.palette.secondary.main }}
-                          />
-                        </Grow>
+                      <InfoCard
+                        title="Patient & Car Information"
+                        data={[
+                          { label: 'Name', value: patient.name },
+                          { label: 'Age', value: patient.age },
+                          { label: 'Diabetes Type', value: patient.diabetes_type },
+                        ]}
+                        data2={[
+                          { label: 'Make', value: car.make },
+                          { label: 'Model', value: car.model },
+                          { label: 'Year', value: car.year },
+                        ]}
+                      />
                       </Grid>
                       <Grid item xs={12} sm={6} md={6} lg={6}>
-                        <Grow in container={containerRef}>
-                          <AnimatedInfoCard
-                            title="Car Information"
-                            data={[
-                              { label: 'Make', value: car.make },
-                              { label: 'Model', value: car.model },
-                              { label: 'Year', value: car.year },
-                            ]}
-                            sx={{ backgroundColor: (theme) => theme.palette.background.lightGrey, color: (theme) => theme.palette.secondary.main }}
-                          />
-                        </Grow>
+                        <GlucoseValue glucoseData={glucoseData} />
                       </Grid>
                     </Grid>
                     <Grid item xs={12} sm={6} md={6} lg={6}>
-                      <GlucoseMonitor glucoseData={glucoseData} alerts={alerts} safetyActions={safetyActions} dataStartIndex={dataStartIndex} dataEndIndex={dataEndIndex}/>
+                      <GlucoseMonitor glucoseData={glucoseData} alerts={alerts} safetyActions={safetyActions} dataStartIndex={dataStartIndex} dataEndIndex={dataEndIndex} />
                       {showNearestHospital && position && <NearestHospital position={position} />}
                     </Grid>
                   </StyledContainer>
@@ -184,6 +152,13 @@ const App = () => {
                   autoHideDuration={6000}
                   onClose={handleCloseSnackbar}
                   anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                  sx={{
+                    position: 'fixed',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    zIndex: 9999,
+                  }}
                 >
                   <MuiAlert onClose={handleCloseSnackbar} severity="info" elevation={6} variant="filled" sx={{ backgroundColor: '#0066B2' }}>
                     {snackbarMessage}
