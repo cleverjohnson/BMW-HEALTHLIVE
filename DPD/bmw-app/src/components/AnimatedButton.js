@@ -10,6 +10,12 @@ const AnimatedButton = styled(Button)(({ theme }) => ({
     backgroundColor: theme.palette.primary.dark,
     transform: 'scale(1.05)',
   },
+  textTransform: 'none',
+  fontSize: '1rem',
+  padding: '0.5rem',
+  '& .MuiButton-endIcon': {
+    marginLeft: theme.spacing(1),
+  },
 }));
 
 export default AnimatedButton;

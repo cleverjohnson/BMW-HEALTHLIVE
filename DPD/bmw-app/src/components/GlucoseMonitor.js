@@ -10,18 +10,28 @@ const GlucoseMonitor = ({ glucoseData, alerts, safetyActions, dataStartIndex, da
     return sa ? sa.action : 'No safety action found';
   };
 
+  const getGlucoseLevelColor = (glucoseLevel) => {
+    if (glucoseLevel < 70) {
+      return 'red';
+    } else if (glucoseLevel >= 70 && glucoseLevel <= 130) {
+      return 'green';
+    } else {
+      return 'yellow';
+    }
+  };
+  
   const chartData = useMemo(() => ({
     labels: glucoseData.slice(dataStartIndex, dataEndIndex).map((gd) => gd.timestamp),
     datasets: [
       {
         label: 'Glucose Level',
         data: glucoseData.slice(dataStartIndex, dataEndIndex).map((gd) => gd.glucose_level),
-        borderColor: 'rgba(255,99,132,1)',
-        backgroundColor: 'rgba(255,99,132,0.2)',
+        borderColor: (ctx) => getGlucoseLevelColor(ctx.dataset.data[ctx.dataIndex]),
+        backgroundColor: (ctx) => `${getGlucoseLevelColor(ctx.dataset.data[ctx.dataIndex])}1A`,
         borderWidth: 2,
       },
     ],
-  }), [glucoseData, dataStartIndex, dataEndIndex]);
+  }), [glucoseData, dataStartIndex, dataEndIndex]);     
 
   const chartOptions = useMemo(() => ({
     scales: {
@@ -32,8 +42,16 @@ const GlucoseMonitor = ({ glucoseData, alerts, safetyActions, dataStartIndex, da
             unit: 'minute',
           },
           gridLines: {
-            display: true, // Add grid lines
+            display: true,
             color: 'rgba(0, 0, 0, 0.1)',
+          },
+          ticks: {
+            fontColor: 'black', // set x-axis label color to black
+          },
+          scaleLabel: {
+            display: true,
+            labelString: 'Time',
+            fontColor: 'black', // set x-axis label color to black
           },
         },
       ],
@@ -41,10 +59,16 @@ const GlucoseMonitor = ({ glucoseData, alerts, safetyActions, dataStartIndex, da
         {
           ticks: {
             beginAtZero: true,
+            fontColor: 'black', // set y-axis label color to black
           },
           gridLines: {
-            display: true, // Add grid lines
+            display: true,
             color: 'rgba(0, 0, 0, 0.1)',
+          },
+          scaleLabel: {
+            display: true,
+            labelString: 'Glucose Level',
+            fontColor: 'black', // set y-axis label color to black
           },
         },
       ],
@@ -57,7 +81,8 @@ const GlucoseMonitor = ({ glucoseData, alerts, safetyActions, dataStartIndex, da
         },
       },
     },
-  }), []);
+    backgroundColor: 'rgba(231, 242, 252, 1)', // set the background color to a lighter shade of blue
+  }), []);  
 
   return (
     <div>

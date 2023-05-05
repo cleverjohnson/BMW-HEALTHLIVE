@@ -1,16 +1,18 @@
 import React from 'react';
-import { Card, CardHeader, CardContent, Typography, Grid } from '@mui/material';
+import { Card, CardHeader, CardContent, Typography, Box } from '@mui/material';
 import { styled } from '@mui/system';
 
 const StyledCard = styled(Card)(({ theme }) => ({
-  backgroundColor: '#FFFFFF',
+  backgroundColor: theme.palette.primary.main,
   boxShadow: 'none',
-  borderRadius: '0',
+  borderRadius: '12px',
   border: `2px solid ${theme.palette.primary.main}`,
   '& .MuiCardHeader-root': {
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.text.secondary,
     padding: theme.spacing(1),
+    textAlign: 'center',
+    fontSize: '1.2rem', // increase header font size
   },
   '& .MuiCardContent-root': {
     paddingTop: 0,
@@ -18,27 +20,88 @@ const StyledCard = styled(Card)(({ theme }) => ({
   },
 }));
 
-const InfoCard = React.forwardRef(({ title, data }, ref) => (
+const ContentContainer = styled('div')(({ theme }) => ({
+  backgroundColor: theme.palette.primary.main,
+  borderRadius: '0 0 10px 10px',
+  padding: '1rem',
+  color: '#fff',
+  display: 'flex',
+  justifyContent: 'space-between',
+}));
+
+const InfoCard = React.forwardRef(({ title, data, data2 }, ref) => (
   <StyledCard ref={ref}>
-    <CardHeader title={title} titleTypographyProps={{ variant: 'subtitle1', fontSize: '0.9rem' }} />
+    <CardHeader
+      title={title}
+      titleTypographyProps={{
+        variant: 'h6',
+        color: 'white',
+        fontWeight: 'bold',
+      }}
+    />
     <CardContent>
-      <Grid container spacing={1}>
-        {data &&
-          data.map(({ label, value }) => (
-            <Grid item xs={12} key={label}>
-              <Typography variant="subtitle2" component="div" gutterBottom sx={{ fontSize: '0.8rem' }}>
-                <strong>{label}</strong>
-              </Typography>
-              <Typography
-                variant="body2"
-                component="div"
-                sx={{ color: '#666666', lineHeight: '1.2', fontSize: '0.7rem' }}
+      <ContentContainer>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.5rem',
+          }}
+        >
+          {data &&
+            data.map(({ label, value }) => (
+              <div
+                key={label}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                }}
               >
-                {value}
-              </Typography>
-            </Grid>
-          ))}
-      </Grid>
+                <Typography variant="subtitle2" component="div" sx={{ fontSize: '1rem', fontWeight: 'bold' }}>
+                  {label}:
+                </Typography>
+                <Typography
+                  variant="body2"
+                  component="div"
+                  sx={{ color: '#FFFFFF', lineHeight: '1.2', fontSize: '0.8rem' }}
+                >
+                  {value || 'N/A'}
+                </Typography>
+              </div>
+            ))}
+        </Box>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.5rem',
+          }}
+        >
+          {data2 &&
+            data2.map(({ label, value }) => (
+              <div
+                key={label}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  width: '100%',
+                }}
+              >
+                <Typography variant="subtitle2" component="div" sx={{ fontSize: '1rem', fontWeight: 'bold' }}>
+                  {label}:
+                </Typography>
+                <Typography
+                  variant="body2"
+                  component="div"
+                  sx={{ color: '#FFFFFF', lineHeight: '1.2', fontSize: '0.8rem' }}
+                >
+                  {value || 'N/A'}
+                </Typography>
+              </div>
+            ))}
+        </Box>
+      </ContentContainer>
     </CardContent>
   </StyledCard>
 ));
